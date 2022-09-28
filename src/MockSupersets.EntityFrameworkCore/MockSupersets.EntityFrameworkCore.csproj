@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MockSupersets.EntityFramework.Shared\MockSupersets.EntityFramework.Shared.csproj" />
+    <ProjectReference Include="..\MockSupersets.EntityFramework.Shared\MockSupersets.EntityFramework.Common.csproj" />
   </ItemGroup>
 
 </Project>

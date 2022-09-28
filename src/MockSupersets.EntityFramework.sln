@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockSupersets.EntityFramework", "MockSupersets.EntityFramework\MockSupersets.EntityFramework.csproj", "{7B03C9A6-1ED0-4A40-B2AC-7F126293434B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSupersets.EntityFramework.Shared", "MockSupersets.EntityFramework.Shared\MockSupersets.EntityFramework.Shared.csproj", "{83A84211-5F0E-4A07-84D5-0C19B87030DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSupersets.EntityFramework.Common", "MockSupersets.EntityFramework.Common\MockSupersets.EntityFramework.Common.csproj", "{83A84211-5F0E-4A07-84D5-0C19B87030DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSupersets.EntityFrameworkCore", "MockSupersets.EntityFrameworkCore\MockSupersets.EntityFrameworkCore.csproj", "{33FCF199-9A26-4CCB-90F8-028AF576237C}"
 EndProject
