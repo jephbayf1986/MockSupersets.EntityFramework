@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace MockSupersets.EntityFramework.Helpers
+namespace MockSupersets.EntityFramework.Common.Helpers
 {
     internal static class MockHelper
     {

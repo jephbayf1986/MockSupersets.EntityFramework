@@ -1,9 +1,9 @@
-﻿using MockSupersets.EntityFramework.Common.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using MockSupersets.EntityFramework.Common.Helpers;
 using Moq;
-using System.Data.Entity;
 using System.Linq;
 
-namespace MockSupersets.EntityFramework.Helpers
+namespace MockSupersets.EntityFrameworkCore.Helpers
 {
     internal static class ReflectionHelper
     {
