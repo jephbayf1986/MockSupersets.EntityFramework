@@ -41,7 +41,7 @@ namespace MockSupersets.EntityFramework.Common
 
         void VerifyChangesNotSaved();
 
-        void VerifyChangesSavedAsync(CancellationToken? cancellationToken = null);
+        void VerifyChangesSavedAsync();
 
         void VerifyChangesNotSavedAsync();
     }

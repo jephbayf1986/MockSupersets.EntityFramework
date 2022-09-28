@@ -1,6 +1,6 @@
 ﻿using dotRandom;
+using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFramework.Models;
-using MockSupersets.EntityFramework.Shared;
 using Moq;
 using System;
 using System.Collections.Generic;

@@ -1,8 +1,8 @@
 ﻿using MockSupersets.EntityFramework.Builders;
+using MockSupersets.EntityFramework.Common;
+using MockSupersets.EntityFramework.Common.Helpers;
 using MockSupersets.EntityFramework.Extensions;
 using MockSupersets.EntityFramework.Helpers;
-using MockSupersets.EntityFramework.Shared;
-using MockSupersets.EntityFramework.Shared.Helpers;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -116,17 +116,13 @@ namespace MockSupersets.EntityFramework
             _mock.Verify(x => x.SaveChanges(), Times.Never);
         }
 
-        public void VerifyChangesSavedAsync(CancellationToken? cancellationToken = null)
+        public void VerifyChangesSavedAsync()
         {
-            if (cancellationToken.HasValue)
-                _mock.Verify(x => x.SaveChangesAsync(cancellationToken.Value), Times.Once);
-            else
-                _mock.Verify(x => x.SaveChangesAsync(), Times.Once);
+            _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         public void VerifyChangesNotSavedAsync()
         {
-            _mock.Verify(x => x.SaveChangesAsync(), Times.Never);
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -179,9 +175,6 @@ namespace MockSupersets.EntityFramework
         public IMockDbContextBuilder WithExceptionThrownOnSaveChangesAsync<TEx>()
             where TEx : Exception, new()
         {
-            _mock.Setup(x => x.SaveChangesAsync())
-                 .Throws<TEx>();
-
             _mock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
                  .Throws<TEx>();
 
