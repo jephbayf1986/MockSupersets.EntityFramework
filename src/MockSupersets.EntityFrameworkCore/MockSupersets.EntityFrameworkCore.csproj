@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MockSupersets.EntityFramework.Shared\MockSupersets.EntityFramework.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
