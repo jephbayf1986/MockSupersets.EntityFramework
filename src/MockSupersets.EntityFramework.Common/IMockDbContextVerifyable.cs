@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace MockSupersets.EntityFramework.Shared
+namespace MockSupersets.EntityFramework.Common
 {
     public interface IMockDbContextVerifyable
     {
@@ -43,6 +43,6 @@ namespace MockSupersets.EntityFramework.Shared
 
         void VerifyChangesSavedAsync(CancellationToken? cancellationToken = null);
 
-        void VerifyChangesNotSavedAsync(); 
+        void VerifyChangesNotSavedAsync();
     }
 }

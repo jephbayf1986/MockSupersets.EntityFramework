@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace MockSupersets.EntityFramework.Shared.Helpers
+namespace MockSupersets.EntityFramework.Common.Helpers
 {
     internal static class TestingHelpers
     {

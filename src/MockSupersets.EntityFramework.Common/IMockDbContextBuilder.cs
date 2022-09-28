@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MockSupersets.EntityFramework.Shared
+namespace MockSupersets.EntityFramework.Common
 {
     public interface IMockDbContextBuilder
     {
