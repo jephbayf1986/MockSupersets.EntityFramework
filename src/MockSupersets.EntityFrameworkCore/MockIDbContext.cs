@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MockSupersets.EntityFramework.Common;
+﻿using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFrameworkCore.Builders;
 using MockSupersets.EntityFrameworkCore.Extensions;
 using MockSupersets.EntityFrameworkCore.Helpers;
@@ -11,19 +10,19 @@ using System.Threading;
 
 namespace MockSupersets.EntityFrameworkCore
 {
-    public sealed class MockDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder, IEFCoreExpansion where TContext : DbContext
+    public sealed class MockIDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder, IEFCoreExpansion where TContext : class, IDbContext
     {
         private Mock<TContext> _mock;
         private MockDbContextOptions _options;
 
-        public MockDbContext(MockDbContextOptions options = null)
+        public MockIDbContext(MockDbContextOptions options = null)
         {
             _mock = new Mock<TContext>();
 
             _options = options ?? new MockDbContextOptions();
         }
 
-        internal MockDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
+        internal MockIDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
         {
             _mock = mock;
 
@@ -31,7 +30,7 @@ namespace MockSupersets.EntityFrameworkCore
         }
 
         public void VerifyAdded<T>(Expression<Func<T, bool>> match)
-            where T : class, new()
+           where T : class, new()
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyAddedOnce(match);
@@ -136,24 +135,40 @@ namespace MockSupersets.EntityFrameworkCore
                  .VerifyRangeRemovedNever(match);
         }
 
-        public void VerifyChangesNotSaved()
-        {
-            _mock.Verify(x => x.SaveChanges(), Times.Once);
-        }
-
         public void VerifyChangesSaved()
         {
+            try
+            {
+                _mock.Verify(x => x.SaveChanges(), Times.Once);
+            }
+            catch
+            {
+                _mock.Verify(x => x.SaveChanges(It.IsAny<bool>()), Times.Once);
+            }
+        }
+
+        public void VerifyChangesNotSaved()
+        {
             _mock.Verify(x => x.SaveChanges(), Times.Never);
+            _mock.Verify(x => x.SaveChanges(It.IsAny<bool>()), Times.Never);
         }
 
         public void VerifyChangesSavedAsync()
         {
-            _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            try
+            {
+                _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            }
+            catch
+            {
+                _mock.Verify(x => x.SaveChangesAsync(It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
+            }
         }
 
         public void VerifyChangesNotSavedAsync()
         {
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+            _mock.Verify(x => x.SaveChangesAsync(It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         public IMockDbContextBuilder WithEntities<T>(params T[] items)
@@ -199,6 +214,9 @@ namespace MockSupersets.EntityFrameworkCore
             _mock.Setup(x => x.SaveChanges())
                  .Throws<TEx>();
 
+            _mock.Setup(x => x.SaveChanges(It.IsAny<bool>()))
+                 .Throws<TEx>();
+
             return this;
         }
 
@@ -206,6 +224,9 @@ namespace MockSupersets.EntityFrameworkCore
             where TEx : Exception, new()
         {
             _mock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                 .Throws<TEx>();
+
+            _mock.Setup(x => x.SaveChangesAsync(It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                  .Throws<TEx>();
 
             return this;
