@@ -106,23 +106,31 @@ namespace MockSupersets.EntityFramework
                  .VerifyRangeRemovedNever(match);
         }
 
-        public void VerifyChangesNotSaved()
+        public void VerifyChangesSaved()
         {
             _mock.Verify(x => x.SaveChanges(), Times.Once);
         }
 
-        public void VerifyChangesSaved()
+        public void VerifyChangesNotSaved()
         {
             _mock.Verify(x => x.SaveChanges(), Times.Never);
         }
 
         public void VerifyChangesSavedAsync()
         {
-            _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            try
+            {
+                _mock.Verify(x => x.SaveChangesAsync(), Times.Once);
+            }
+            catch
+            {
+                _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            }
         }
 
         public void VerifyChangesNotSavedAsync()
         {
+            _mock.Verify(x => x.SaveChangesAsync(), Times.Never);
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
