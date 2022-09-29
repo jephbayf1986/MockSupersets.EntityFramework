@@ -34,7 +34,7 @@ namespace MockSupersets.EntityFrameworkCore.Builders
         {
             ICollection<T> items = new List<T>();
 
-            for (var i = 0; i < _options.DefaultNumberOfItemsInDbSet; i++)
+            for (var i = 0; i < _options.MinItemsInDbSet; i++)
                 items.Add(DotRandom.GenerateRandom<T>());
 
             SetDbSetData(items);
@@ -47,11 +47,11 @@ namespace MockSupersets.EntityFrameworkCore.Builders
             ICollection<T> items = entities.ToList();
 
             // Fill remaining quota with random data
-            if (items.Count() < _options.DefaultNumberOfItemsInDbSet)
+            if (items.Count() < _options.MinItemsInDbSet)
             {
                 var startPoint = items.Count() - 1;
 
-                for (var i = startPoint; i < _options.DefaultNumberOfItemsInDbSet; i++)
+                for (var i = startPoint; i < _options.MinItemsInDbSet; i++)
                     items.Add(DotRandom.GenerateRandom<T>());
             }
 
@@ -64,7 +64,7 @@ namespace MockSupersets.EntityFrameworkCore.Builders
         {
             ICollection<T> items = new List<T>();
 
-            var numberOfItems = _options.DefaultNumberOfItemsInDbSet;
+            var numberOfItems = _options.MinItemsInDbSet;
             var itemToAction = DotRandom.RandomIntBetween(0, numberOfItems - 1);
 
             for (var i = 0; i < numberOfItems; i++)

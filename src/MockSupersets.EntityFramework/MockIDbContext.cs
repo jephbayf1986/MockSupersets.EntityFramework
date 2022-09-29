@@ -16,12 +16,15 @@ namespace MockSupersets.EntityFramework
     {
         private Mock<TContext> _mock;
         private MockDbContextOptions _options;
+        private ICollection<MockDbSetBuilder> _dbSetBuilders;
 
         public MockIDbContext(MockDbContextOptions options = null)
         {
             _mock = new Mock<TContext>();
 
             _options = options ?? new MockDbContextOptions();
+
+            _dbSetBuilders = _options.AutoPopulateDbSets ? ReflectionHelper.AutoPopulateDbSets<TContext>(_options) : new List<MockDbSetBuilder>();
         }
 
         internal MockIDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
@@ -29,6 +32,8 @@ namespace MockSupersets.EntityFramework
             _mock = mock;
 
             _options = options ?? new MockDbContextOptions();
+
+            _dbSetBuilders = new List<MockDbSetBuilder>();
         }
 
         public void VerifyAdded<T>(Expression<Func<T, bool>> match)
@@ -105,12 +110,12 @@ namespace MockSupersets.EntityFramework
                  .VerifyRangeRemovedNever(match);
         }
 
-        public void VerifyChangesNotSaved()
+        public void VerifyChangesSaved()
         {
             _mock.Verify(x => x.SaveChanges(), Times.Once);
         }
 
-        public void VerifyChangesSaved()
+        public void VerifyChangesNotSaved()
         {
             _mock.Verify(x => x.SaveChanges(), Times.Never);
         }
@@ -133,44 +138,39 @@ namespace MockSupersets.EntityFramework
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
-        public MockIDbContext<TContext> WithEntities<T>(params T[] items) 
+        public MockIDbContext<TContext> WithEntities<T>(params T[] items)
             where T : class, new()
         {
-            var mockDbSet = new MockDbSetBuilder<T>(_options)
-                                    .WithEntities(items)
-                                    .Build();
+            var dbSetBuilder = _dbSetBuilders.GetDbSetFor<T>(_options);
 
-            _mock.SetReturnsDefault(mockDbSet.Object);
+            dbSetBuilder = dbSetBuilder.WithEntities(items);
 
             return this;
         }
 
-        public MockIDbContext<TContext> WithEntity<T>(params Action<T>[] actions) 
+        public MockIDbContext<TContext> WithEntity<T>(params Action<T>[] actions)
             where T : class, new()
         {
-            var mockDbSet = new MockDbSetBuilder<T>(_options)
-                                    .WithEntity(actions)
-                                    .Build();
+            var dbSetBuilder = _dbSetBuilders.GetDbSetFor<T>(_options);
 
-            _mock.SetReturnsDefault(mockDbSet.Object);
+            dbSetBuilder = dbSetBuilder.WithEntity(actions);
 
             return this;
         }
 
-        public MockIDbContext<TContext> WithActionOnAdd<T>(Action<T> action) 
+        public MockIDbContext<TContext> WithActionOnAdd<T>(Action<T> action)
             where T : class, new()
         {
-            var mockDbSet = new MockDbSetBuilder<T>(_options)
+            var dbSetBuilder = _dbSetBuilders.GetDbSetFor<T>(_options);
+
+            dbSetBuilder = dbSetBuilder
                                     .WithRandomData()
-                                    .WithCallBackOnAdd(action)
-                                    .Build();
-
-            _mock.SetReturnsDefault(mockDbSet.Object);
+                                    .WithCallBackOnAdd(action);
 
             return this;
         }
 
-        public MockIDbContext<TContext> WithExceptionThrownOnSaveChanges<TEx>() 
+        public MockIDbContext<TContext> WithExceptionThrownOnSaveChanges<TEx>()
             where TEx : Exception, new()
         {
             _mock.Setup(x => x.SaveChanges())
@@ -179,12 +179,9 @@ namespace MockSupersets.EntityFramework
             return this;
         }
 
-        public MockIDbContext<TContext> WithExceptionThrownOnSaveChangesAsync<TEx>() 
+        public MockIDbContext<TContext> WithExceptionThrownOnSaveChangesAsync<TEx>()
             where TEx : Exception, new()
         {
-            _mock.Setup(x => x.SaveChangesAsync())
-                 .Throws<TEx>();
-
             _mock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
                  .Throws<TEx>();
 
@@ -195,6 +192,8 @@ namespace MockSupersets.EntityFramework
         {
             get
             {
+                _mock.ApplyDbSetsAsDefaultReturns(_dbSetBuilders);
+
                 return _mock.Object;
             }
         }

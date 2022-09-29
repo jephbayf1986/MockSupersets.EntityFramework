@@ -2,6 +2,8 @@
 {
     public class MockDbContextOptions
     {
-        public int DefaultNumberOfItemsInDbSet { get; set; } = 5;
+        public bool AutoPopulateDbSets { get; set; } = false;
+
+        public int MinItemsInDbSet { get; set; } = 5;
     }
 }

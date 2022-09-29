@@ -17,12 +17,15 @@ namespace MockSupersets.EntityFramework
     {
         private Mock<TContext> _mock;
         private MockDbContextOptions _options;
+        private ICollection<MockDbSetBuilder> _dbSetBuilders;
         
         public MockDbContext(MockDbContextOptions options = null)
         {
             _mock = new Mock<TContext>();
 
             _options = options ?? new MockDbContextOptions();
+
+            _dbSetBuilders = _options.AutoPopulateDbSets ? ReflectionHelper.AutoPopulateDbSets<TContext>(_options) : new List<MockDbSetBuilder>();
         }
 
         internal MockDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
@@ -30,6 +33,8 @@ namespace MockSupersets.EntityFramework
             _mock = mock;
 
             _options = options ?? new MockDbContextOptions();
+
+            _dbSetBuilders = new List<MockDbSetBuilder>();
         }
 
         public void VerifyAdded<T>(Expression<Func<T, bool>> match) 
@@ -137,11 +142,9 @@ namespace MockSupersets.EntityFramework
         public MockDbContext<TContext> WithEntities<T>(params T[] items) 
             where T : class, new()
         {
-            var mockDbSet = new MockDbSetBuilder<T>(_options)
-                                    .WithEntities(items)
-                                    .Build();
+            var dbSetBuilder = _dbSetBuilders.GetDbSetFor<T>(_options);
 
-            _mock.SetReturnsDefault(mockDbSet.Object);
+            dbSetBuilder = dbSetBuilder.WithEntities(items);
 
             return this;
         }
@@ -149,11 +152,9 @@ namespace MockSupersets.EntityFramework
         public MockDbContext<TContext> WithEntity<T>(params Action<T>[] actions)
             where T : class, new()
         {
-            var mockDbSet = new MockDbSetBuilder<T>(_options)
-                                    .WithEntity(actions)
-                                    .Build();
+            var dbSetBuilder = _dbSetBuilders.GetDbSetFor<T>(_options);
 
-            _mock.SetReturnsDefault(mockDbSet.Object);
+            dbSetBuilder = dbSetBuilder.WithEntity(actions);
 
             return this;
         }
@@ -161,12 +162,11 @@ namespace MockSupersets.EntityFramework
         public MockDbContext<TContext> WithActionOnAdd<T>(Action<T> action) 
             where T : class, new()
         {
-            var mockDbSet = new MockDbSetBuilder<T>(_options)
-                                    .WithRandomData()
-                                    .WithCallBackOnAdd(action)
-                                    .Build();
+            var dbSetBuilder = _dbSetBuilders.GetDbSetFor<T>(_options);
 
-            _mock.SetReturnsDefault(mockDbSet.Object);
+            dbSetBuilder = dbSetBuilder
+                                    .WithRandomData()
+                                    .WithCallBackOnAdd(action);
 
             return this;
         }
@@ -193,6 +193,8 @@ namespace MockSupersets.EntityFramework
         {
             get
             {
+                _mock.ApplyDbSetsAsDefaultReturns(_dbSetBuilders);
+
                 return _mock.Object;
             }
         }
