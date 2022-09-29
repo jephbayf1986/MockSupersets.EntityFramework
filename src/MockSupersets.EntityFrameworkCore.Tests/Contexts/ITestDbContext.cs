@@ -3,12 +3,12 @@ using MockSupersets.EntityFrameworkCore.Tests.Models;
 
 namespace MockSupersets.EntityFrameworkCore.Tests.Contexts
 {
-    internal interface ITestDbContext : IDbContext
+    public interface ITestDbContext : IDbContext
     {
-        DbSet<Person> People { get; set; }
+        public DbSet<Person> People { get; set; }
 
-        DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
 
-        DbSet<Department> Departments { get; set; }
+        public DbSet<Department> Departments { get; set; }
     }
 }

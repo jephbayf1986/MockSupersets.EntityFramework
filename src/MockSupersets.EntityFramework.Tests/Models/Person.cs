@@ -1,4 +1,6 @@
-﻿namespace MockSupersets.EntityFrameworkCore.Tests.Models
+﻿using System;
+
+namespace MockSupersets.EntityFramework.Tests.Models
 {
     public class Person
     {

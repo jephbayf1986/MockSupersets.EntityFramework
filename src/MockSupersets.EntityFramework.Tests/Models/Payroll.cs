@@ -1,4 +1,4 @@
-﻿namespace MockSupersets.EntityFrameworkCore.Tests.Models
+﻿namespace MockSupersets.EntityFramework.Tests.Models
 {
     public class Payroll
     {

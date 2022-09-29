@@ -5,10 +5,10 @@ namespace MockSupersets.EntityFrameworkCore.Tests.Contexts
 {
     internal class TestDbContext : DbContext
     {
-        DbSet<Person> People { get; set; }
+        public DbSet<Person> People { get; set; }
 
-        DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
 
-        DbSet<Department> Departments { get; set; }
+        public DbSet<Department> Departments { get; set; }
     }
 }
