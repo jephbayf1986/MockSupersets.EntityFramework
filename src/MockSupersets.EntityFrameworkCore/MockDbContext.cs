@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace MockSupersets.EntityFrameworkCore
 {
-    public sealed class MockDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder, IEFCoreExpansion where TContext : DbContext
+    public sealed class MockDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockDbContext<TContext>>, IMockObject<TContext>, IEFCoreExpansion where TContext : DbContext
     {
         private Mock<TContext> _mock;
         private MockDbContextOptions _options;
@@ -156,7 +156,7 @@ namespace MockSupersets.EntityFrameworkCore
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
-        public IMockDbContextBuilder WithEntities<T>(params T[] items)
+        public MockDbContext<TContext> WithEntities<T>(params T[] items)
             where T : class, new()
         {
             var mockDbSet = new MockDbSetBuilder<T>(_options)
@@ -168,7 +168,7 @@ namespace MockSupersets.EntityFrameworkCore
             return this;
         }
 
-        public IMockDbContextBuilder WithEntity<T>(params Action<T>[] actions)
+        public MockDbContext<TContext> WithEntity<T>(params Action<T>[] actions)
             where T : class, new()
         {
             var mockDbSet = new MockDbSetBuilder<T>(_options)
@@ -180,7 +180,7 @@ namespace MockSupersets.EntityFrameworkCore
             return this;
         }
 
-        public IMockDbContextBuilder WithActionOnAdd<T>(Action<T> action)
+        public MockDbContext<TContext> WithActionOnAdd<T>(Action<T> action)
             where T : class, new()
         {
             var mockDbSet = new MockDbSetBuilder<T>(_options)
@@ -193,7 +193,7 @@ namespace MockSupersets.EntityFrameworkCore
             return this;
         }
 
-        public IMockDbContextBuilder WithExceptionThrownOnSaveChanges<TEx>()
+        public MockDbContext<TContext> WithExceptionThrownOnSaveChanges<TEx>()
             where TEx : Exception, new()
         {
             _mock.Setup(x => x.SaveChanges())
@@ -202,13 +202,21 @@ namespace MockSupersets.EntityFrameworkCore
             return this;
         }
 
-        public IMockDbContextBuilder WithExceptionThrownOnSaveChangesAsync<TEx>()
+        public MockDbContext<TContext> WithExceptionThrownOnSaveChangesAsync<TEx>()
             where TEx : Exception, new()
         {
             _mock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
                  .Throws<TEx>();
 
             return this;
+        }
+
+        public TContext Object
+        {
+            get
+            {
+                return _mock.Object;
+            }
         }
     }
 }

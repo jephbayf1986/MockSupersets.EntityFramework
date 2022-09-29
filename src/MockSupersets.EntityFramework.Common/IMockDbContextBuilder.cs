@@ -2,21 +2,21 @@
 
 namespace MockSupersets.EntityFramework.Common
 {
-    public interface IMockDbContextBuilder
+    public interface IMockDbContextBuilder<TMock>
     {
-        IMockDbContextBuilder WithEntities<T>(params T[] items)
+        TMock WithEntities<T>(params T[] items)
             where T : class, new();
 
-        IMockDbContextBuilder WithEntity<T>(params Action<T>[] actions)
+        TMock WithEntity<T>(params Action<T>[] actions)
             where T : class, new();
 
-        IMockDbContextBuilder WithActionOnAdd<T>(Action<T> action)
+        TMock WithActionOnAdd<T>(Action<T> action)
             where T : class, new();
 
-        IMockDbContextBuilder WithExceptionThrownOnSaveChanges<TEx>()
+        TMock WithExceptionThrownOnSaveChanges<TEx>()
             where TEx : Exception, new();
 
-        IMockDbContextBuilder WithExceptionThrownOnSaveChangesAsync<TEx>()
+        TMock WithExceptionThrownOnSaveChangesAsync<TEx>()
             where TEx : Exception, new();
     }
 }
