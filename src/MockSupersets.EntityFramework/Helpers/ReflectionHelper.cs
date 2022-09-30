@@ -6,33 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 
 namespace MockSupersets.EntityFramework.Helpers
 {
     internal static class ReflectionHelper
     {
-        public static ICollection<MockDbSetBuilder> AutoPopulateDbSets<TContext>(MockDbContextOptions options)
+        public static ICollection<MockDbSetBuilder> GetDbSetBuilders<TContext>(MockDbContextOptions options)
             where TContext : class
         {
+            if (!options.AutoPopulateDbSets)
+                return new List<MockDbSetBuilder>();
+
             var dbSetProperties = typeof(TContext).GetProperties()
                                                    .Where(x => x.PropertyType == typeof(DbSet<>));
 
             var builders = new List<MockDbSetBuilder>();
 
             foreach (var dbSetProperty in dbSetProperties)
-            {
-                var dbSetGenericType = dbSetProperty.GetType().GetGenericArguments()[0];
-
-                var builderBaseType = typeof(MockDbSetBuilder<>);
-
-                var builderType = builderBaseType.MakeGenericType(dbSetGenericType);
-
-                var newBuilder = Activator.CreateInstance(builderType, options);
-
-
-
-                builders.Add((MockDbSetBuilder)newBuilder);
-            }
+                builders.Add(dbSetProperty.CreateDbSetBuilder(options));
 
             return builders;
         }
@@ -62,6 +54,21 @@ namespace MockSupersets.EntityFramework.Helpers
             if (dbSet == null) return null;
 
             return (dbSet as DbSet<T>).GetMockFromObject();
+        }
+
+        private static MockDbSetBuilder CreateDbSetBuilder(this PropertyInfo dbSetProperty, MockDbContextOptions options)
+        {
+            var dbSetGenericType = dbSetProperty.GetType().GetGenericArguments()[0];
+
+            var builderBaseType = typeof(MockDbSetBuilder<>);
+
+            var builderType = builderBaseType.MakeGenericType(dbSetGenericType);
+
+            var newBuilder = Activator.CreateInstance(builderType, options);
+
+            // Trigger Random Data Method
+
+            return (MockDbSetBuilder)newBuilder;
         }
     }
 }

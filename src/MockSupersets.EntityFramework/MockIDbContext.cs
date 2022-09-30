@@ -18,22 +18,20 @@ namespace MockSupersets.EntityFramework
         private MockDbContextOptions _options;
         private ICollection<MockDbSetBuilder> _dbSetBuilders;
 
-        public MockIDbContext(MockDbContextOptions options = null)
+        public MockIDbContext(MockDbContextOptions options = null) : this(new Mock<TContext>(), null, options)
         {
-            _mock = new Mock<TContext>();
-
-            _options = options ?? new MockDbContextOptions();
-
-            _dbSetBuilders = _options.AutoPopulateDbSets ? ReflectionHelper.AutoPopulateDbSets<TContext>(_options) : new List<MockDbSetBuilder>();
         }
 
-        internal MockIDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
+        internal MockIDbContext(Mock<TContext> mock, ICollection<MockDbSetBuilder> mockDbSetBuilders, MockDbContextOptions options = null)
         {
             _mock = mock;
 
             _options = options ?? new MockDbContextOptions();
 
-            _dbSetBuilders = new List<MockDbSetBuilder>();
+            if (mockDbSetBuilders != null)
+                _dbSetBuilders = mockDbSetBuilders;
+            else
+                _dbSetBuilders = ReflectionHelper.GetDbSetBuilders<TContext>(_options);
         }
 
         public void VerifyAdded<T>(Expression<Func<T, bool>> match)
