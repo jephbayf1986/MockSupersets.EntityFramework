@@ -19,10 +19,13 @@ namespace MockSupersets.EntityFramework.Builders
     {
         private Mock<DbSet<T>> _mock;
         private readonly MockDbContextOptions _options;
+        private readonly ICollection<T> _items;
 
         public MockDbSetBuilder(MockDbContextOptions options)
         {
             _mock = new Mock<DbSet<T>>();
+
+            _items = new List<T>();
 
             _options = options;
         }
@@ -37,42 +40,37 @@ namespace MockSupersets.EntityFramework.Builders
 
         public MockDbSetBuilder<T> WithRandomData()
         {
-            ICollection<T> items = new List<T>();
-
             for (var i = 0; i < _options.MinItemsInDbSet; i++)
-                items.Add(DotRandom.GenerateRandom<T>());
-
-            SetDbSetData(items);
+                _items.Add(DotRandom.GenerateRandom<T>());
 
             return this;
         }
 
         public MockDbSetBuilder<T> WithEntities(params T[] entities) 
         {
-            ICollection<T> items = entities.ToList();
+            foreach (var entity in entities)
+                _items.Add(entity);
 
             // Fill remaining quota with random data
-            if (items.Count() < _options.MinItemsInDbSet)
+            if (_items.Count() < _options.MinItemsInDbSet)
             {
-                var startPoint = items.Count() - 1;
+                var startPoint = _items.Count() - 1;
 
                 for (var i = startPoint; i < _options.MinItemsInDbSet; i++)
-                    items.Add(DotRandom.GenerateRandom<T>());
+                    _items.Add(DotRandom.GenerateRandom<T>());
             }
-
-            SetDbSetData(items);
 
             return this;
         }
 
         public MockDbSetBuilder<T> WithEntity(params Action<T>[] actions)
         {
-            ICollection<T> items = new List<T>();
+            var minimumQuotaMet = _items.Count >= _options.MinItemsInDbSet;
 
-            var numberOfItems = _options.MinItemsInDbSet;
-            var itemToAction = DotRandom.RandomIntBetween(0, numberOfItems - 1);
+            var itemsToCreate = minimumQuotaMet ? 1 : _options.MinItemsInDbSet - _items.Count;
+            var itemToAction = DotRandom.RandomIntBetween(0, itemsToCreate - 1);
 
-            for (var i = 0; i < numberOfItems; i++)
+            for (var i = 0; i < itemsToCreate; i++)
             {
                 var item = DotRandom.GenerateRandom<T>();
 
@@ -82,10 +80,8 @@ namespace MockSupersets.EntityFramework.Builders
                         action(item);
                 }
 
-                items.Add(item);
+                _items.Add(item);
             }
-
-            SetDbSetData(items);
 
             return this;
         }
@@ -109,6 +105,8 @@ namespace MockSupersets.EntityFramework.Builders
 
         public Mock<DbSet<T>> Build()
         {
+            SetDbSetData(_items);
+
             return _mock;
         }
     }
