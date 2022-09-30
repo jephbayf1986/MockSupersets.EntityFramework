@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MockSupersets.EntityFramework.Common\MockSupersets.EntityFramework.Common.csproj" />
-    <ProjectReference Include="..\MockSupersets.EntityFramework.Shared\MockSupersets.EntityFramework.Common.csproj" />
   </ItemGroup>
 
 </Project>
