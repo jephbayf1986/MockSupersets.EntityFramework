@@ -12,7 +12,7 @@ namespace MockSupersets.EntityFramework.Extensions
         {
             foreach (var builder in mockDbSetBuilders)
             {
-                var mockDbSet = builder.BuildMockDbSet();
+                var mockDbSet = builder.BuildDbSet();
 
                 mockContext.SetReturnsDefault(mockDbSet);
             }

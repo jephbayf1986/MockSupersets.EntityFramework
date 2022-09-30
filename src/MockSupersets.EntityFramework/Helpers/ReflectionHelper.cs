@@ -19,7 +19,7 @@ namespace MockSupersets.EntityFramework.Helpers
                 return new List<MockDbSetBuilder>();
 
             var dbSetProperties = typeof(TContext).GetProperties()
-                                                   .Where(x => x.PropertyType.Name == typeof(DbSet<>).Name);
+                                                   .Where(x => x.TypeIsDbSet());
 
             var builders = new List<MockDbSetBuilder>();
 
@@ -60,12 +60,18 @@ namespace MockSupersets.EntityFramework.Helpers
             return (dbSet as DbSet<T>).GetMockFromObject();
         }
 
-        public static object BuildMockDbSet(this MockDbSetBuilder mockDbSetBuilder)
+        public static object BuildDbSet(this MockDbSetBuilder mockDbSetBuilder)
         {
             var buildMethod = mockDbSetBuilder.GetType()
                                               .GetMethod("Build");
 
-            return buildMethod.Invoke(mockDbSetBuilder, new object[0]);
+            var mockDbSet = buildMethod.Invoke(mockDbSetBuilder, new object[0]);
+
+            var objectProperty = mockDbSet.GetType()
+                                      .GetProperties()
+                                      .FirstOrDefault(x => x.Name == "Object" && x.TypeIsDbSet());
+
+            return objectProperty.GetValue(mockDbSet);
         }
 
         private static MockDbSetBuilder CreateDbSetBuilder(this PropertyInfo dbSetProperty, MockDbContextOptions options)
@@ -84,6 +90,9 @@ namespace MockSupersets.EntityFramework.Helpers
 
             return (MockDbSetBuilder)builderWithRandomData;
         }
+
+        private static bool TypeIsDbSet(this PropertyInfo property)
+            => property.PropertyType.Name == typeof(DbSet<>).Name;
 
         private static Type GetDbSetGenericType(this PropertyInfo dbSetProperty)
             => dbSetProperty.PropertyType.GetGenericArguments()[0];
