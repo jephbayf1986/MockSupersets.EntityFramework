@@ -60,6 +60,14 @@ namespace MockSupersets.EntityFramework.Helpers
             return (dbSet as DbSet<T>).GetMockFromObject();
         }
 
+        public static object BuildMockDbSet(this MockDbSetBuilder mockDbSetBuilder)
+        {
+            var buildMethod = mockDbSetBuilder.GetType()
+                                              .GetMethod("Build");
+
+            return buildMethod.Invoke(mockDbSetBuilder, new object[0]);
+        }
+
         private static MockDbSetBuilder CreateDbSetBuilder(this PropertyInfo dbSetProperty, MockDbContextOptions options)
         {
             var dbSetGenericType = dbSetProperty.GetDbSetGenericType();

@@ -1,15 +1,21 @@
 ﻿using MockSupersets.EntityFramework.Builders;
-using System;
+using MockSupersets.EntityFramework.Helpers;
+using Moq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MockSupersets.EntityFramework.Extensions
 {
     internal static class MockExtensions
     {
-        public static void ApplyDbSetsAsDefaultReturns<TContext>(this TContext context, IEnumerable<MockDbSetBuilder> mockDbSetBuilders)
+        public static void ApplyDbSetsAsDefaultReturns<TContext>(this Mock<TContext> mockContext, IEnumerable<MockDbSetBuilder> mockDbSetBuilders)
+            where TContext : class
         {
+            foreach (var builder in mockDbSetBuilders)
+            {
+                var mockDbSet = builder.BuildMockDbSet();
 
+                mockContext.SetReturnsDefault(mockDbSet);
+            }
         }
     }
 }
