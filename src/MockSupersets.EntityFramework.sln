@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.2.32630.192
+VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockSupersets.EntityFramework", "MockSupersets.EntityFramework\MockSupersets.EntityFramework.csproj", "{7B03C9A6-1ED0-4A40-B2AC-7F126293434B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockSupersets.EntityFramework.NetStandard2.1", "MockSupersets.EntityFramework.NetStandard2.1\MockSupersets.EntityFramework.NetStandard2.1.csproj", "{7B03C9A6-1ED0-4A40-B2AC-7F126293434B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockSupersets.EntityFramework.Common", "MockSupersets.EntityFramework.Common\MockSupersets.EntityFramework.Common.csproj", "{83A84211-5F0E-4A07-84D5-0C19B87030DE}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockSupersets.EntityFrameworkCore.Tests", "MockSupersets.EntityFrameworkCore.Tests\MockSupersets.EntityFrameworkCore.Tests.csproj", "{18431238-1564-422C-AA0C-9485DDD7011A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSupersets.EntityFramework.Tests", "MockSupersets.EntityFramework.Tests\MockSupersets.EntityFramework.Tests.csproj", "{8595F282-5A08-498D-98BF-9396376C1929}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockSupersets.EntityFramework.NetStandard2.1.Tests", "MockSupersets.EntityFramework.NetStandard2.1.Tests\MockSupersets.EntityFramework.NetStandard2.1.Tests.csproj", "{DA2F7236-2E6C-4809-BB3B-9D8DC7DA0DB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockSupersets.EntityFramework", "MockSupersets.EntityFramework\MockSupersets.EntityFramework.csproj", "{C68A5A56-7A4F-41E1-8918-A8F96C562F09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{8595F282-5A08-498D-98BF-9396376C1929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8595F282-5A08-498D-98BF-9396376C1929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8595F282-5A08-498D-98BF-9396376C1929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA2F7236-2E6C-4809-BB3B-9D8DC7DA0DB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA2F7236-2E6C-4809-BB3B-9D8DC7DA0DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA2F7236-2E6C-4809-BB3B-9D8DC7DA0DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA2F7236-2E6C-4809-BB3B-9D8DC7DA0DB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68A5A56-7A4F-41E1-8918-A8F96C562F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68A5A56-7A4F-41E1-8918-A8F96C562F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68A5A56-7A4F-41E1-8918-A8F96C562F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68A5A56-7A4F-41E1-8918-A8F96C562F09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

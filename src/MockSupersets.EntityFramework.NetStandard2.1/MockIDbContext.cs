@@ -1,41 +1,40 @@
 ﻿using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFramework.Common.Helpers;
-using MockSupersets.EntityFramework.Extensions;
-using MockSupersets.EntityFramework.Helpers;
+using MockSupersets.EntityFramework.NetStandard21.Extensions;
+using MockSupersets.EntityFramework.NetStandard21.Helpers;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace MockSupersets.EntityFramework
+namespace MockSupersets.EntityFramework.NetStandard21
 {
-    public sealed class MockDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockDbContext<TContext>>, IMockObject<TContext> where TContext : DbContext
+    public sealed class MockIDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockIDbContext<TContext>>, IMockObject<TContext> where TContext : class, IDbContext
     {
         private Mock<TContext> _mock;
         private MockDbContextOptions _options;
-        
-        public MockDbContext(MockDbContextOptions options = null) : this(new Mock<TContext>(), options)
+
+        public MockIDbContext(MockDbContextOptions options = null) : this(new Mock<TContext>(), options)
         {
         }
 
-        internal MockDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
+        internal MockIDbContext(Mock<TContext> mock, MockDbContextOptions options = null)
         {
             _mock = mock;
 
             _options = options ?? new MockDbContextOptions();
         }
 
-        public void VerifyAdded<T>(Expression<Func<T, bool>> match) 
+        public void VerifyAdded<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyAddedOnce(match);
         }
 
-        public void VerifyNotAdded<T>(Expression<Func<T, bool>> match) 
+        public void VerifyNotAdded<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
@@ -65,7 +64,7 @@ namespace MockSupersets.EntityFramework
                         .ShouldContain(match.Compile());
         }
 
-        public void VerifyNotUpdated<T>(Expression<Func<T, bool>> match) 
+        public void VerifyNotUpdated<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
             var dbSet = _mock.GetMockDbSetAttribute<TContext, T>();
@@ -74,7 +73,7 @@ namespace MockSupersets.EntityFramework
                         .ShouldNotContain(match.Compile());
         }
 
-        public void VerifyRemoved<T>(Expression<Func<T, bool>> match) 
+        public void VerifyRemoved<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
@@ -130,7 +129,7 @@ namespace MockSupersets.EntityFramework
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
-        public MockDbContext<TContext> WithEntities<T>(params T[] items) 
+        public MockIDbContext<TContext> WithEntities<T>(params T[] items)
             where T : class, new()
         {
             var mockDbSet = _mock.GetDbSetBuilder<TContext, T>(_options)
@@ -142,7 +141,7 @@ namespace MockSupersets.EntityFramework
             return this;
         }
 
-        public MockDbContext<TContext> WithEntity<T>(params Action<T>[] actions)
+        public MockIDbContext<TContext> WithEntity<T>(params Action<T>[] actions)
             where T : class, new()
         {
             var mockDbSet = _mock.GetDbSetBuilder<TContext, T>(_options)
@@ -154,7 +153,7 @@ namespace MockSupersets.EntityFramework
             return this;
         }
 
-        public MockDbContext<TContext> WithActionOnAdd<T>(Action<T> action) 
+        public MockIDbContext<TContext> WithActionOnAdd<T>(Action<T> action)
             where T : class, new()
         {
             var mockDbSet = _mock.GetDbSetBuilder<TContext, T>(_options)
@@ -167,7 +166,7 @@ namespace MockSupersets.EntityFramework
             return this;
         }
 
-        public MockDbContext<TContext> WithExceptionThrownOnSaveChanges<TEx>()
+        public MockIDbContext<TContext> WithExceptionThrownOnSaveChanges<TEx>()
             where TEx : Exception, new()
         {
             _mock.Setup(x => x.SaveChanges())
@@ -176,7 +175,7 @@ namespace MockSupersets.EntityFramework
             return this;
         }
 
-        public MockDbContext<TContext> WithExceptionThrownOnSaveChangesAsync<TEx>()
+        public MockIDbContext<TContext> WithExceptionThrownOnSaveChangesAsync<TEx>()
             where TEx : Exception, new()
         {
             _mock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))

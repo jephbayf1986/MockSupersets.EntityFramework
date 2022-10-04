@@ -1,7 +1,7 @@
 ﻿using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFramework.Common.Helpers;
-using MockSupersets.EntityFramework.Extensions;
-using MockSupersets.EntityFramework.Helpers;
+using MockSupersets.EntityFramework.NetStandard21.Extensions;
+using MockSupersets.EntityFramework.NetStandard21.Helpers;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace MockSupersets.EntityFramework
+namespace MockSupersets.EntityFramework.NetStandard21
 {
     public sealed class MockDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockDbContext<TContext>>, IMockObject<TContext> where TContext : DbContext
     {
