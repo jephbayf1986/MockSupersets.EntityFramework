@@ -10,11 +10,7 @@ using System.Linq;
 
 namespace MockSupersets.EntityFramework.Builders
 {
-    internal abstract class MockDbSetBuilder
-    {
-    }
-
-    internal sealed class MockDbSetBuilder<T> : MockDbSetBuilder
+    internal sealed class MockDbSetBuilder<T>
         where T : class, new()
     {
         private Mock<DbSet<T>> _mock;
@@ -26,6 +22,15 @@ namespace MockSupersets.EntityFramework.Builders
             _mock = new Mock<DbSet<T>>();
 
             _items = new List<T>();
+
+            _options = options;
+        }
+
+        public MockDbSetBuilder(Mock<DbSet<T>> existingDbSet, MockDbContextOptions options)
+        {
+            _mock = existingDbSet;
+
+            _items = existingDbSet.Object.ToList();
 
             _options = options;
         }

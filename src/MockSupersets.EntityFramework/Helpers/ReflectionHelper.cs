@@ -2,50 +2,13 @@
 using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFramework.Common.Helpers;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Reflection;
 
 namespace MockSupersets.EntityFramework.Helpers
 {
     internal static class ReflectionHelper
     {
-        public static ICollection<MockDbSetBuilder> GetDbSetBuilders<TContext>(MockDbContextOptions options)
-            where TContext : class
-        {
-            if (!options.AutoPopulateDbSets)
-                return new List<MockDbSetBuilder>();
-
-            var dbSetProperties = typeof(TContext).GetProperties()
-                                                   .Where(x => x.TypeIsDbSet());
-
-            var builders = new List<MockDbSetBuilder>();
-
-            // Ensure only 1 for each generic type
-            var uniqueDbSetProperties = dbSetProperties.GroupBy(x => x.GetDbSetGenericType())
-                                                       .Select(x => x.First());
-
-            foreach (var dbSetProperty in uniqueDbSetProperties)
-                builders.Add(dbSetProperty.CreateDbSetBuilder(options));
-
-            return builders;
-        }
-
-        public static MockDbSetBuilder<T> GetDbSetFor<T>(this ICollection<MockDbSetBuilder> builders, MockDbContextOptions options)
-            where T : class, new()
-        {
-            var existingBuilder = builders.FirstOrDefault(x => x.GetType() == typeof(MockDbSetBuilder<T>));
-
-            if (existingBuilder == null)
-            {
-                builders.Add(new MockDbSetBuilder<T>(options));
-            }
-                
-            return (MockDbSetBuilder<T>)builders.First(x => x.GetType() == typeof(MockDbSetBuilder<T>));
-        }
-
         public static Mock<DbSet<T>> GetMockDbSetAttribute<TContext, T>(this Mock<TContext> mockContext)
             where T : class
             where TContext : class
@@ -60,41 +23,16 @@ namespace MockSupersets.EntityFramework.Helpers
             return (dbSet as DbSet<T>).GetMockFromObject();
         }
 
-        public static object BuildDbSet(this MockDbSetBuilder mockDbSetBuilder)
+        public static MockDbSetBuilder<T> GetDbSetBuilder<TContext, T>(this Mock<TContext> mockContext, MockDbContextOptions options)
+            where T : class, new()
+            where TContext : class
         {
-            var buildMethod = mockDbSetBuilder.GetType()
-                                              .GetMethod("Build");
+            var existingDbSet = mockContext.GetMockDbSetAttribute<TContext, T>();
 
-            var mockDbSet = buildMethod.Invoke(mockDbSetBuilder, new object[0]);
-
-            var objectProperty = mockDbSet.GetType()
-                                      .GetProperties()
-                                      .FirstOrDefault(x => x.Name == "Object" && x.TypeIsDbSet());
-
-            return objectProperty.GetValue(mockDbSet);
+            if (existingDbSet == null)
+                return new MockDbSetBuilder<T>(options);
+            else
+                return new MockDbSetBuilder<T>(existingDbSet, options);
         }
-
-        private static MockDbSetBuilder CreateDbSetBuilder(this PropertyInfo dbSetProperty, MockDbContextOptions options)
-        {
-            var dbSetGenericType = dbSetProperty.GetDbSetGenericType();
-
-            var builderBaseType = typeof(MockDbSetBuilder<>);
-
-            var builderType = builderBaseType.MakeGenericType(dbSetGenericType);
-
-            var emptyBuilder = Activator.CreateInstance(builderType, options);
-
-            var withRandomDataMethod = builderType.GetMethod("WithRandomData");
-
-            var builderWithRandomData = withRandomDataMethod.Invoke(emptyBuilder, new object[0]);
-
-            return (MockDbSetBuilder)builderWithRandomData;
-        }
-
-        private static bool TypeIsDbSet(this PropertyInfo property)
-            => property.PropertyType.Name == typeof(DbSet<>).Name;
-
-        private static Type GetDbSetGenericType(this PropertyInfo dbSetProperty)
-            => dbSetProperty.PropertyType.GetGenericArguments()[0];
     }
 }
