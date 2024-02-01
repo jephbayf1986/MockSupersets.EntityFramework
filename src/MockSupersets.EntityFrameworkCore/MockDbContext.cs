@@ -11,7 +11,11 @@ using System.Threading;
 
 namespace MockSupersets.EntityFrameworkCore
 {
-    public sealed class MockDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockDbContext<TContext>>, IMockObject<TContext>, IEFCoreExpansion where TContext : DbContext
+    public sealed class MockDbContext<TContext> : 
+        IMockDbContextVerifyable, 
+        IMockDbContextBuilder<MockDbContext<TContext>>, 
+        IMockObject<TContext>, 
+        IEFCoreExpansion where TContext : class, IDbContext
     {
         private readonly Mock<TContext> _mock;
         private readonly MockDbContextOptions _options;
@@ -35,6 +39,8 @@ namespace MockSupersets.EntityFrameworkCore
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyAddedOnce(match);
+
+            _mock.VerifyAddedOnce(match);
         }
 
         public void VerifyNotAdded<T>(Expression<Func<T, bool>> match)

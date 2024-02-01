@@ -15,6 +15,13 @@ namespace MockSupersets.EntityFrameworkCore.Extensions
             mockDbSet.Verify(x => x.Add(It.Is(match)), Times.Once);
         }
 
+        public static void VerifyAddedOnce<TContext, T>(this Mock<TContext> mockContext, Expression<Func<T, bool>> match)
+            where T : class, new()
+            where TContext : class, IDbContext
+        {
+            mockContext.Verify(x => x.Add(It.Is(match)), Times.Once);
+        }
+
         public static void VerifyAddedNever<T>(this Mock<DbSet<T>> mockDbSet, Expression<Func<T, bool>> match)
             where T : class, new()
         {
