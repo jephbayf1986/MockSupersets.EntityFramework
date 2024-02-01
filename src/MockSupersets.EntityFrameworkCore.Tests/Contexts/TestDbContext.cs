@@ -3,7 +3,7 @@ using MockSupersets.EntityFrameworkCore.Tests.Models;
 
 namespace MockSupersets.EntityFrameworkCore.Tests.Contexts
 {
-    internal class TestDbContext : DbContext
+    public class TestDbContext : DbContext
     {
         public DbSet<Person> People { get; set; }
 

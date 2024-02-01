@@ -23,12 +23,12 @@ namespace MockSupersets.EntityFrameworkCore.Helpers
 
         public static Mock<T> GetMockFromObject<T>(this T mockedObject) where T : class
         {
-            PropertyInfo[] pis = mockedObject.GetType().GetProperties()
+            PropertyInfo[] propInfo = mockedObject.GetType().GetProperties()
                 .Where(
                     p => p.PropertyType.Name == "Mock`1"
                 ).ToArray();
 
-            return pis.FirstOrDefault().GetGetMethod().Invoke(mockedObject, null) as Mock<T>;
+            return propInfo.FirstOrDefault().GetGetMethod().Invoke(mockedObject, null) as Mock<T>;
         }
     }
 }
