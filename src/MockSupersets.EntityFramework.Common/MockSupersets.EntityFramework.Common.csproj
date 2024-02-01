@@ -13,9 +13,4 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Moq" Version="4.18.2" />
-	  <PackageReference Include="xunit.assert" Version="2.3.0" />
-	</ItemGroup>
-
 </Project>

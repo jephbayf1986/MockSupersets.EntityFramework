@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+#if NET5_0_OR_GREATER
+    using Microsoft.EntityFrameworkCore.Query;
+#else
+    using Microsoft.EntityFrameworkCore.Query.Internal;
+#endif
 
 namespace MockSupersets.EntityFrameworkCore.Models
 {

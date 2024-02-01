@@ -12,8 +12,8 @@ namespace MockSupersets.EntityFrameworkCore
 {
     public sealed class MockIDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockIDbContext<TContext>>, IMockObject<TContext>, IEFCoreExpansion where TContext : class, IDbContext
     {
-        private Mock<TContext> _mock;
-        private MockDbContextOptions _options;
+        private readonly Mock<TContext> _mock;
+        private readonly MockDbContextOptions _options;
 
         public MockIDbContext(MockDbContextOptions options = null)
         {
