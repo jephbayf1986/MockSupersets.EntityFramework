@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MockSupersets.EntityFramework.Common;
+﻿using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFrameworkCore.Builders;
 using MockSupersets.EntityFrameworkCore.Extensions;
 using MockSupersets.EntityFrameworkCore.Helpers;
@@ -37,10 +36,15 @@ namespace MockSupersets.EntityFrameworkCore
         public void VerifyAdded<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyAddedOnce(match);
-
-            _mock.VerifyAddedOnce(match);
+            try
+            {
+                _mock.GetMockDbSetAttribute<TContext, T>()
+                     .VerifyAddedOnce(match);
+            }
+            catch
+            {
+                _mock.VerifyAddedOnce(match);
+            }
         }
 
         public void VerifyNotAdded<T>(Expression<Func<T, bool>> match)
@@ -48,18 +52,29 @@ namespace MockSupersets.EntityFrameworkCore
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyAddedNever(match);
+
+            _mock.VerifyAddedNever(match);
         }
 
         public void VerifyAddedAsync<T>(Expression<Func<T, bool>> match) where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyAddedAsyncOnce(match);
+            try
+            {
+                _mock.GetMockDbSetAttribute<TContext, T>()
+                     .VerifyAddedAsyncOnce(match);
+            }
+            catch
+            {
+                _mock.VerifyAddedAsyncOnce(match);
+            }
         }
 
         public void VerifyNotAddedAsync<T>(Expression<Func<T, bool>> match) where T : class, new()
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyAddedAsyncNever(match);
+
+            _mock.VerifyAddedAsyncNever(match);
         }
 
         public void VerifyRangeAdded<T>(Expression<Func<IEnumerable<T>, bool>> matches)
@@ -91,8 +106,15 @@ namespace MockSupersets.EntityFrameworkCore
         public void VerifyUpdated<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyUpdatedOnce(match);
+            try
+            {
+                _mock.GetMockDbSetAttribute<TContext, T>()
+                     .VerifyUpdatedOnce(match);
+            }
+            catch
+            {
+                _mock.VerifyUpdatedOnce(match);
+            }
         }
 
         public void VerifyNotUpdated<T>(Expression<Func<T, bool>> match)
@@ -100,25 +122,43 @@ namespace MockSupersets.EntityFrameworkCore
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyUpdatedNever(match);
+
+            _mock.VerifyUpdatedNever(match);
         }
 
         public void VerifyRangeUpdated<T>(Expression<Func<IEnumerable<T>, bool>> matches) where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeUpdatedOnce(matches);
+            try
+            {
+                _mock.GetMockDbSetAttribute<TContext, T>()
+                     .VerifyRangeUpdatedOnce(matches);
+            }
+            catch
+            {
+                _mock.VerifyRangeUpdatedOnce(matches);
+            }
         }
 
         public void VerifyRangeNotUpdated<T>(Expression<Func<IEnumerable<T>, bool>> matches) where T : class, new()
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyRangeUpdatedNever(matches);
+
+            _mock.VerifyRangeUpdatedNever(matches);
         }
 
         public void VerifyRemoved<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRemovedOnce(match);
+            try
+            {
+                _mock.GetMockDbSetAttribute<TContext, T>()
+                     .VerifyRemovedOnce(match);
+            }
+            catch
+            {
+                _mock.VerifyRemovedOnce(match);
+            }
         }
 
         public void VerifyNotRemoved<T>(Expression<Func<T, bool>> match)
@@ -126,13 +166,22 @@ namespace MockSupersets.EntityFrameworkCore
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyRemovedNever(match);
+
+            _mock.VerifyRemovedNever(match);
         }
 
         public void VerifyRangeRemoved<T>(Expression<Func<IEnumerable<T>, bool>> match)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeRemovedOnce(match);
+            try
+            {
+                _mock.GetMockDbSetAttribute<TContext, T>()
+                     .VerifyRangeRemovedOnce(match);
+            }
+            catch
+            {
+                _mock.VerifyRangeRemovedOnce(match);
+            }
         }
 
         public void VerifyRangeNotRemoved<T>(Expression<Func<IEnumerable<T>, bool>> match)
@@ -140,6 +189,8 @@ namespace MockSupersets.EntityFrameworkCore
         {
             _mock.GetMockDbSetAttribute<TContext, T>()
                  .VerifyRangeRemovedNever(match);
+
+            _mock.VerifyRangeRemovedNever(match);
         }
 
         public void VerifyChangesNotSaved()
