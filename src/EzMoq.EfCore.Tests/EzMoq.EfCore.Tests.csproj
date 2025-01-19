@@ -24,8 +24,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MockSupersets.EntityFrameworkCore\MockSupersets.EntityFrameworkCore.csproj" />
-  </ItemGroup>
-
 </Project>
