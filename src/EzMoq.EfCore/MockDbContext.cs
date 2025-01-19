@@ -1,8 +1,6 @@
 ﻿using EzMoq.EfCore.Builders;
-using EzMoq.EfCore.Extensions;
-using EzMoq.EfCore.Helpers;
+using EzMoq.EfCore.Interfaces;
 using EzMoq.EfCore.Options;
-using MockSupersets.EntityFrameworkCore.Extensions;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -11,7 +9,7 @@ using System.Threading;
 
 namespace EzMoq.EfCore
 {
-    public sealed class MockDbContext<TContext> : IEFCoreExpansion where TContext : class, IDbContext
+    public sealed class MockDbContext<TContext> : IVerifyActions, IVerifySave where TContext : class, IDbContext
     {
         private readonly Mock<TContext> _mock;
         private readonly MockDbContextOptions _options;
@@ -30,172 +28,150 @@ namespace EzMoq.EfCore
             _options = options ?? new MockDbContextOptions();
         }
 
-        public void VerifyAdded<T>(Expression<Func<T, bool>> match)
+        public void VerifyAddedOnce<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
-            try
-            {
-                _mock.GetMockDbSetAttribute<TContext, T>()
-                     .VerifyAddedOnce(match);
-            }
-            catch
-            {
-                _mock.VerifyAddedOnce(match);
-            }
+            _mock.Verify(x => x.Add(It.Is(match)), Times.Once);
         }
 
-        public void VerifyNotAdded<T>(Expression<Func<T, bool>> match)
+        public void VerifyAdded<T>(Expression<Func<T, bool>> match, Times times)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyAddedNever(match);
-
-            _mock.VerifyAddedNever(match);
+            _mock.Verify(x => x.Add(It.Is(match)), times);
         }
 
-        public void VerifyAddedAsync<T>(Expression<Func<T, bool>> match) where T : class, new()
-        {
-            try
-            {
-                _mock.GetMockDbSetAttribute<TContext, T>()
-                     .VerifyAddedAsyncOnce(match);
-            }
-            catch
-            {
-                _mock.VerifyAddedAsyncOnce(match);
-            }
-        }
-
-        public void VerifyNotAddedAsync<T>(Expression<Func<T, bool>> match) where T : class, new()
-        {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyAddedAsyncNever(match);
-
-            _mock.VerifyAddedAsyncNever(match);
-        }
-
-        public void VerifyRangeAdded<T>(Expression<Func<IEnumerable<T>, bool>> matches)
+        public void VerifyNeverAdded<T>(Expression<Func<T, bool>> match)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeAddedOnce(matches);
+            _mock.Verify(x => x.Add(It.Is(match)), Times.Never);
         }
 
-        public void VerifyRangeNotAdded<T>(Expression<Func<IEnumerable<T>, bool>> matches)
+        public void VerifyAddedOnceAsync<T>(Expression<Func<T, bool>> match) 
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeAddedNever(matches);
+            _mock.Verify(x => x.AddAsync(It.Is(match), It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        public void VerifyRangeAddedAsync<T>(Expression<Func<IEnumerable<T>, bool>> matches) where T : class, new()
-        {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeAddedAsyncOnce(matches);
-        }
-
-        public void VerifyRangeNotAddedAsync<T>(Expression<Func<IEnumerable<T>, bool>> matches) where T : class, new()
-        {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeAddedAsyncNever(matches);
-        }
-
-        public void VerifyUpdated<T>(Expression<Func<T, bool>> match)
+        public void VerifyAddedAsync<T>(Expression<Func<T, bool>> match, Times times) 
             where T : class, new()
         {
-            try
-            {
-                _mock.GetMockDbSetAttribute<TContext, T>()
-                     .VerifyUpdatedOnce(match);
-            }
-            catch
-            {
-                _mock.VerifyUpdatedOnce(match);
-            }
+            _mock.Verify(x => x.AddAsync(It.Is(match), It.IsAny<CancellationToken>()), times);
         }
 
-        public void VerifyNotUpdated<T>(Expression<Func<T, bool>> match)
+        public void VerifyNeverAddedAsync<T>(Expression<Func<T, bool>> match) 
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyUpdatedNever(match);
-
-            _mock.VerifyUpdatedNever(match);
+            _mock.Verify(x => x.AddAsync(It.Is(match), It.IsAny<CancellationToken>()), Times.Never);
         }
 
-        public void VerifyRangeUpdated<T>(Expression<Func<IEnumerable<T>, bool>> matches) where T : class, new()
-        {
-            try
-            {
-                _mock.GetMockDbSetAttribute<TContext, T>()
-                     .VerifyRangeUpdatedOnce(matches);
-            }
-            catch
-            {
-                _mock.VerifyRangeUpdatedOnce(matches);
-            }
-        }
-
-        public void VerifyRangeNotUpdated<T>(Expression<Func<IEnumerable<T>, bool>> matches) where T : class, new()
-        {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeUpdatedNever(matches);
-
-            _mock.VerifyRangeUpdatedNever(matches);
-        }
-
-        public void VerifyRemoved<T>(Expression<Func<T, bool>> match)
+        public void VerifyRangeAddedOnce<T>(Expression<Func<IEnumerable<T>, bool>> matches)
             where T : class, new()
         {
-            try
-            {
-                _mock.GetMockDbSetAttribute<TContext, T>()
-                     .VerifyRemovedOnce(match);
-            }
-            catch
-            {
-                _mock.VerifyRemovedOnce(match);
-            }
+            _mock.Verify(x => x.AddRange(It.Is(matches)), Times.Once);
         }
 
-        public void VerifyNotRemoved<T>(Expression<Func<T, bool>> match)
+        public void VerifyRangeAdded<T>(Expression<Func<IEnumerable<T>, bool>> matches, Times times) where T : class, new()
+        {
+            _mock.Verify(x => x.AddRange(It.Is(matches)), times);
+        }
+
+        public void VerifyRangeNeverAdded<T>(Expression<Func<IEnumerable<T>, bool>> matches)
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRemovedNever(match);
-
-            _mock.VerifyRemovedNever(match);
+            _mock.Verify(x => x.AddRangeAsync(It.Is(matches), It.IsAny<CancellationToken>()), Times.Never);
         }
 
-        public void VerifyRangeRemoved<T>(Expression<Func<IEnumerable<T>, bool>> match)
+        public void VerifyRangeAddedOnceAsync<T>(Expression<Func<IEnumerable<T>, bool>> matches) 
             where T : class, new()
         {
-            try
-            {
-                _mock.GetMockDbSetAttribute<TContext, T>()
-                     .VerifyRangeRemovedOnce(match);
-            }
-            catch
-            {
-                _mock.VerifyRangeRemovedOnce(match);
-            }
+            _mock.Verify(x => x.AddRangeAsync(It.Is(matches), It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        public void VerifyRangeNotRemoved<T>(Expression<Func<IEnumerable<T>, bool>> match)
+        public void VerifyRangeAddedAsync<T>(Expression<Func<IEnumerable<T>, bool>> matches, Times times) where T : class, new()
+        {
+            _mock.Verify(x => x.AddRangeAsync(It.Is(matches), It.IsAny<CancellationToken>()), times);
+        }
+
+        public void VerifyRangeNeverAddedAsync<T>(Expression<Func<IEnumerable<T>, bool>> matches) 
             where T : class, new()
         {
-            _mock.GetMockDbSetAttribute<TContext, T>()
-                 .VerifyRangeRemovedNever(match);
-
-            _mock.VerifyRangeRemovedNever(match);
+            _mock.Verify(x => x.AddRangeAsync(It.Is(matches), It.IsAny<CancellationToken>()), Times.Never);
         }
 
-        public void VerifyChangesNotSaved()
+        public void VerifyUpdatedOnce<T>(Expression<Func<T, bool>> match)
+            where T : class, new()
+        {
+            _mock.Verify(x => x.Update(It.Is(match)), Times.Once);
+        }
+
+        public void VerifyUpdated<T>(Expression<Func<T, bool>> match, Times times) where T : class, new()
+        {
+            _mock.Verify(x => x.Update(It.Is(match)), times);
+        }
+
+        public void VerifyNeverUpdated<T>(Expression<Func<T, bool>> match)
+            where T : class, new()
+        {
+            _mock.Verify(x => x.Update(It.Is(match)), Times.Never);
+        }
+
+        public void VerifyRangeUpdatedOnce<T>(Expression<Func<IEnumerable<T>, bool>> matches) 
+            where T : class, new()
+        {
+            _mock.Verify(x => x.UpdateRange(It.Is(matches)), Times.Once);
+        }
+
+        public void VerifyRangeUpdated<T>(Expression<Func<IEnumerable<T>, bool>> matches, Times times) where T : class, new()
+        {
+            _mock.Verify(x => x.UpdateRange(It.Is(matches)), times);
+        }
+
+        public void VerifyRangeNeverUpdated<T>(Expression<Func<IEnumerable<T>, bool>> matches) 
+            where T : class, new()
+        {
+            _mock.Verify(x => x.UpdateRange(It.Is(matches)), Times.Never);
+        }
+
+        public void VerifyRemovedOnce<T>(Expression<Func<T, bool>> match)
+            where T : class, new()
+        {
+            _mock.Verify(x => x.Remove(It.Is(match)), Times.Once);
+        }
+
+        public void VerifyRemoved<T>(Expression<Func<T, bool>> match, Times times) where T : class, new()
+        {
+            _mock.Verify(x => x.Remove(It.Is(match)), times);
+        }
+
+        public void VerifyNeverRemoved<T>(Expression<Func<T, bool>> match)
+            where T : class, new()
+        {
+            _mock.Verify(x => x.Remove(It.Is(match)), Times.Never);
+        }
+
+        public void VerifyRangeRemovedOnce<T>(Expression<Func<IEnumerable<T>, bool>> match)
+            where T : class, new()
+        {
+            _mock.Verify(x => x.RemoveRange(It.Is(match)), Times.Once);
+        }
+
+        public void VerifyRangeRemoved<T>(Expression<Func<IEnumerable<T>, bool>> match, Times times) where T : class, new()
+        {
+            _mock.Verify(x => x.RemoveRange(It.Is(match)), times);
+        }
+
+        public void VerifyRangeNeverRemoved<T>(Expression<Func<IEnumerable<T>, bool>> match)
+            where T : class, new()
+        {
+            _mock.Verify(x => x.RemoveRange(It.Is(match)), Times.Never);
+        }
+
+        public void VerifyChangesSaved()
         {
             _mock.Verify(x => x.SaveChanges(), Times.Once);
         }
 
-        public void VerifyChangesSaved()
+        public void VerifyChangesNeverSaved()
         {
             _mock.Verify(x => x.SaveChanges(), Times.Never);
         }
@@ -205,7 +181,7 @@ namespace EzMoq.EfCore
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        public void VerifyChangesNotSavedAsync()
+        public void VerifyChangesNeverSavedAsync()
         {
             _mock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }

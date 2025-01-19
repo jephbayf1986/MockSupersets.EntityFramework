@@ -6,29 +6,7 @@ namespace EzMoq.EfCore.Tests
     public class VerifyTests
     {
         [Fact]
-        public void WhenAddedOnDbSet_ShouldVerifyAddedCorrectly()
-        {
-            // Arrange
-            var mock = new MockDbContext<ITestDbContext>()
-                                .WithEntity<Person>();
-
-            var sut = mock.Object;
-
-            var firstName = RandomString(20);
-            var lastName = RandomString(20);
-
-            Person newPerson = new Person() { FirstName = firstName, LastName = lastName };
-
-            // Act
-            sut.People.Add(newPerson);
-
-            // Assert
-            mock.VerifyAdded<Person>(x => x.FirstName == firstName
-                                       && x.LastName == lastName);
-        }
-
-        [Fact]
-        public void WhenAddedDirect_ShouldVerifyAddedCorrectly()
+        public void GivenInterface_WhenAddedDirect_ShouldVerifyAddedCorrectly()
         {
             // Arrange
             var mock = new MockDbContext<ITestDbContext>()
@@ -45,12 +23,34 @@ namespace EzMoq.EfCore.Tests
             sut.Add(newPerson);
 
             // Assert
-            mock.VerifyAdded<Person>(x => x.FirstName == firstName
+            mock.VerifyAddedOnce<Person>(x => x.FirstName == firstName
                                        && x.LastName == lastName);
         }
 
         [Fact]
-        public void WhenNotAdded_ShouldVerifyNotAddedCorrectly()
+        public void GivenClass_WhenAddedDirect_ShouldVerifyAddedCorrectly()
+        {
+            // Arrange
+            var mock = new MockDbContext<TestDbContext>()
+                                .WithEntity<Person>();
+
+            var sut = mock.Object;
+
+            var firstName = RandomString(20);
+            var lastName = RandomString(20);
+
+            Person newPerson = new Person() { FirstName = firstName, LastName = lastName };
+
+            // Act
+            sut.Add(newPerson);
+
+            // Assert
+            mock.VerifyAddedOnce<Person>(x => x.FirstName == firstName
+                                       && x.LastName == lastName);
+        }
+
+        [Fact]
+        public void GivenInterface_WhenNotAdded_ShouldVerifyNotAddedCorrectly()
         {
             // Arrange
             var mock = new MockDbContext<ITestDbContext>()
@@ -64,10 +64,32 @@ namespace EzMoq.EfCore.Tests
             Person newPerson = new Person() { FirstName = firstName, LastName = lastName };
 
             // Act
-            sut.People.AddAsync(newPerson);
+            sut.AddAsync(newPerson);
 
             // Assert
-            mock.VerifyNotAdded<Person>(x => x.FirstName == firstName
+            mock.VerifyNeverAdded<Person>(x => x.FirstName == firstName
+                                          && x.LastName == lastName);
+        }
+
+        [Fact]
+        public void GivenClass_WhenNotAdded_ShouldVerifyNotAddedCorrectly()
+        {
+            // Arrange
+            var mock = new MockDbContext<TestDbContext>()
+                                .WithEntity<Person>();
+
+            var sut = mock.Object;
+
+            var firstName = RandomString(20);
+            var lastName = RandomString(20);
+
+            Person newPerson = new Person() { FirstName = firstName, LastName = lastName };
+
+            // Act
+            sut.AddAsync(newPerson);
+
+            // Assert
+            mock.VerifyNeverAdded<Person>(x => x.FirstName == firstName
                                           && x.LastName == lastName);
         }
     }
