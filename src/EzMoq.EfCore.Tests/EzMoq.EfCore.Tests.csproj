@@ -24,4 +24,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EzMoq.EfCore\EzMoq.EfCore.csproj" />
+  </ItemGroup>
+
 </Project>

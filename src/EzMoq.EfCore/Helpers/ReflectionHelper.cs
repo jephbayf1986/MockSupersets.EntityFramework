@@ -3,7 +3,7 @@ using Moq;
 using System.Linq;
 using System.Reflection;
 
-namespace MockSupersets.EntityFrameworkCore.Helpers
+namespace EzMoq.EfCore.Helpers
 {
     internal static class ReflectionHelper
     {

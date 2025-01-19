@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace MockSupersets.EntityFrameworkCore.Extensions
+namespace EzMoq.EfCore.Extensions
 {
     internal static class MockDbSetExtensions
     {

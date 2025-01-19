@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MockSupersets.EntityFrameworkCore.Tests.Models;
+﻿using EzMoq.EfCore;
+using EzMoq.EfCore.Tests.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace MockSupersets.EntityFrameworkCore.Tests.Contexts
+namespace EzMoq.EfCore.Tests.Contexts
 {
     public interface ITestDbContext : IDbContext
     {

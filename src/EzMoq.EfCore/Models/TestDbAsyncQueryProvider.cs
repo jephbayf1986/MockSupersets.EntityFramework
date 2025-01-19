@@ -4,12 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 #if NET5_0_OR_GREATER
-    using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query;
 #else
-    using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 #endif
 
-namespace MockSupersets.EntityFrameworkCore.Models
+namespace EzMoq.EfCore.Models
 {
     public class TestDbAsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
@@ -32,12 +32,12 @@ namespace MockSupersets.EntityFrameworkCore.Models
 
         public object Execute(Expression expression)
         {
-            return this.innerQueryProvider.Execute(expression);
+            return innerQueryProvider.Execute(expression);
         }
 
         public TResult Execute<TResult>(Expression expression)
         {
-            return this.innerQueryProvider.Execute<TResult>(expression);
+            return innerQueryProvider.Execute<TResult>(expression);
         }
 
         public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken())
@@ -47,7 +47,7 @@ namespace MockSupersets.EntityFrameworkCore.Models
             var expectedResultType = typeof(TResult).GetGenericArguments()?.FirstOrDefault();
             if (expectedResultType == null)
             {
-                return default(TResult);
+                return default;
             }
 
             return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))
@@ -57,7 +57,7 @@ namespace MockSupersets.EntityFrameworkCore.Models
 
         public Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken)
         {
-            return Task.FromResult(this.Execute(expression));
+            return Task.FromResult(Execute(expression));
         }
     }
 }

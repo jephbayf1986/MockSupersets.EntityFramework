@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace MockSupersets.EntityFrameworkCore.Models
+namespace EzMoq.EfCore.Models
 {
     internal class TestDbAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
@@ -26,7 +26,7 @@ namespace MockSupersets.EntityFrameworkCore.Models
 
         public IAsyncEnumerator<T> GetEnumerator()
         {
-            return this.GetAsyncEnumerator();
+            return GetAsyncEnumerator();
         }
     }
 }

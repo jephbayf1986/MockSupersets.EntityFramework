@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MockSupersets.EntityFrameworkCore
+namespace EzMoq.EfCore
 {
     public interface IDbContext
     {

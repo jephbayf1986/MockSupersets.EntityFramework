@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace MockSupersets.EntityFrameworkCore
+namespace EzMoq.EfCore
 {
     public interface IEFCoreExpansion
     {

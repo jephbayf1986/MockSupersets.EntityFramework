@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MockSupersets.EntityFrameworkCore.Models
+namespace EzMoq.EfCore.Models
 {
     internal class TestDbAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
@@ -12,12 +12,12 @@ namespace MockSupersets.EntityFrameworkCore.Models
 
         public TestDbAsyncEnumerator(IEnumerator<T> enumerator)
         {
-            this.innerEnumerator = enumerator;
+            innerEnumerator = enumerator;
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -29,27 +29,27 @@ namespace MockSupersets.EntityFrameworkCore.Models
 
         public Task<bool> MoveNext(CancellationToken cancellationToken)
         {
-            return Task.FromResult(this.innerEnumerator.MoveNext());
+            return Task.FromResult(innerEnumerator.MoveNext());
         }
 
         public ValueTask<bool> MoveNextAsync()
         {
-            return new ValueTask<bool>(Task.FromResult(this.innerEnumerator.MoveNext()));
+            return new ValueTask<bool>(Task.FromResult(innerEnumerator.MoveNext()));
         }
 
-        public T Current => this.innerEnumerator.Current;
+        public T Current => innerEnumerator.Current;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {
                     // Dispose managed resources.
-                    this.innerEnumerator.Dispose();
+                    innerEnumerator.Dispose();
                 }
 
-                this.disposed = true;
+                disposed = true;
             }
         }
     }

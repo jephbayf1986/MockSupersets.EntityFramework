@@ -1,8 +1,7 @@
-using MockSupersets.EntityFrameworkCore;
-using MockSupersets.EntityFrameworkCore.Tests.Contexts;
-using MockSupersets.EntityFrameworkCore.Tests.Models;
+using EzMoq.EfCore.Tests.Contexts;
+using EzMoq.EfCore.Tests.Models;
 
-namespace MockSupersets.EntityFramework.Tests
+namespace EzMoq.EfCore.Tests
 {
     public class VerifyTests
     {
@@ -24,7 +23,7 @@ namespace MockSupersets.EntityFramework.Tests
             sut.People.Add(newPerson);
 
             // Assert
-            mock.VerifyAdded<Person>(x => x.FirstName == firstName 
+            mock.VerifyAdded<Person>(x => x.FirstName == firstName
                                        && x.LastName == lastName);
         }
 

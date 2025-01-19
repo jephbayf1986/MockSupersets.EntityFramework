@@ -1,14 +1,15 @@
-﻿using MockSupersets.EntityFrameworkCore.Builders;
+﻿using EzMoq.EfCore.Builders;
+using EzMoq.EfCore.Extensions;
+using EzMoq.EfCore.Helpers;
+using EzMoq.EfCore.Options;
 using MockSupersets.EntityFrameworkCore.Extensions;
-using MockSupersets.EntityFrameworkCore.Helpers;
-using MockSupersets.EntityFrameworkCore.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace MockSupersets.EntityFrameworkCore
+namespace EzMoq.EfCore
 {
     public sealed class MockDbContext<TContext> : IEFCoreExpansion where TContext : class, IDbContext
     {

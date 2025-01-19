@@ -1,14 +1,14 @@
 ﻿using dotRandom;
+using EzMoq.EfCore.Models;
+using EzMoq.EfCore.Options;
 using Microsoft.EntityFrameworkCore;
-using MockSupersets.EntityFrameworkCore.Models;
-using MockSupersets.EntityFrameworkCore.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MockSupersets.EntityFrameworkCore.Builders
+namespace EzMoq.EfCore.Builders
 {
     internal sealed class MockDbSetBuilder<T>
         where T : class, new()

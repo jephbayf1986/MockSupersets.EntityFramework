@@ -1,4 +1,4 @@
-﻿namespace MockSupersets.EntityFrameworkCore.Tests.Models
+﻿namespace EzMoq.EfCore.Tests.Models
 {
     public class Department
     {

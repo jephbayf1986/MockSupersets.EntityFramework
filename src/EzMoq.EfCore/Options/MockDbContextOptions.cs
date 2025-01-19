@@ -1,4 +1,4 @@
-﻿namespace MockSupersets.EntityFrameworkCore.Options
+﻿namespace EzMoq.EfCore.Options
 {
     public class MockDbContextOptions
     {
