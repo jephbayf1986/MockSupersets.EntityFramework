@@ -1,4 +1,4 @@
-﻿namespace MockSupersets.EntityFramework.Common
+﻿namespace MockSupersets.EntityFrameworkCore.Options
 {
     public class MockDbContextOptions
     {

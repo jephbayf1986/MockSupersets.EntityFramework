@@ -1,7 +1,7 @@
-﻿using MockSupersets.EntityFramework.Common;
-using MockSupersets.EntityFrameworkCore.Builders;
+﻿using MockSupersets.EntityFrameworkCore.Builders;
 using MockSupersets.EntityFrameworkCore.Extensions;
 using MockSupersets.EntityFrameworkCore.Helpers;
+using MockSupersets.EntityFrameworkCore.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace MockSupersets.EntityFrameworkCore
 {
-    public sealed class MockIDbContext<TContext> : IMockDbContextVerifyable, IMockDbContextBuilder<MockIDbContext<TContext>>, IMockObject<TContext>, IEFCoreExpansion where TContext : class, IDbContext
+    public sealed class MockIDbContext<TContext> : IEFCoreExpansion where TContext : class, IDbContext
     {
         private readonly Mock<TContext> _mock;
         private readonly MockDbContextOptions _options;

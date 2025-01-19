@@ -1,7 +1,7 @@
 ﻿using dotRandom;
 using Microsoft.EntityFrameworkCore;
-using MockSupersets.EntityFramework.Common;
 using MockSupersets.EntityFrameworkCore.Models;
+using MockSupersets.EntityFrameworkCore.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
